@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13.6
+    container_name: evreka1
+    environment:
+      POSTGRES_DB: evreka
+      POSTGRES_USER: anton
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5430:5432"

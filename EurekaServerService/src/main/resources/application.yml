@@ -1,0 +1,16 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+
+spring:
+  application:
+    name: eurika
+  datasource:
+    password: pass
+    url: jdbc:postgresql://localhost:5430/evrekadb
+    username: anton
+    driver: org.postgresql.Driver

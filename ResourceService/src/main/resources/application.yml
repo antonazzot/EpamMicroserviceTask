@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: RESOURCE
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5435/song
+    username: postgres
+    driver: org.postgresql.Drive
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 200KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+aws:
+  s3:
+    endpoint-url: http://localhost:4566
+
+eureka:
+  client:
+    server-url:
+      defaultZone: http://localhost:8761/
