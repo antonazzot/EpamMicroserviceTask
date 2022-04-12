@@ -1,7 +1,5 @@
 package resourceservice.service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 import resourceservice.model.Song;
 import resourceservice.repository.SongRepository;
 
-import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -23,7 +23,7 @@ public class SongService {
     private String bucketName;
 
     private final SongRepository songRepository;
-    private final AmazonSaverService amazonSaverService;
+    private final AmazonService amazonService;
 
 
     public Integer saveSong (MultipartFile file) {
@@ -35,13 +35,27 @@ public class SongService {
                 .build();
 
         Integer songId = songRepository.save(song).getId();
-        amazonSaverService.extractMetaAndPutS3(songId, file, bucketName);
+        amazonService.extractMetaAndPutS3(songId, file, bucketName);
         return songId;
+    }
+
+    public ResponseEntity <?> getSongById (Integer id) {
+        if (!songRepository.existsById(id))
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).header("Id problem", "Id not found").build();
+        Song song = songRepository.findById(id).orElseThrow();
+        return ResponseEntity.of(Optional.of(amazonService.getSongById(id, bucketName)));
     }
 
     public Boolean validateFile (MultipartFile multipartFile) {
         if (multipartFile.isEmpty() || Objects.requireNonNull(multipartFile.getContentType()).isEmpty() || !multipartFile.getContentType().equals("audio/mpeg"))
         return Boolean.TRUE;
         return Boolean.FALSE;
+    }
+
+    public Integer [] deleteSongById(Integer[] id) {
+        List<Song> songs = songRepository.findAllById(Arrays.asList(id));
+        songRepository.deleteAllById(Arrays.asList(id));
+        amazonService.deleteSongs(songs);
+        return id;
     }
 }

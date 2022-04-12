@@ -24,6 +24,12 @@ public class SongMetadataController {
       return songMetadataService.saveSong(metadatadto);
     }
 
+    @DeleteMapping("/delete/{deleteid}")
+    @ResponseBody
+    public void deleteMetadata (@RequestParam Integer [] id) {
+        songMetadataService.deleteById(id);
+    }
+
     @PostMapping("/save1/{id}")
     @ResponseBody
     public Integer saveMetadata (@RequestParam Integer id) {

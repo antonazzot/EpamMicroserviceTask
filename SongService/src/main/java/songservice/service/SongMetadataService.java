@@ -7,6 +7,7 @@ import resourceprocessor.dto.MetadataDTO;
 import songservice.model.SongMetadata;
 import songservice.repository.SongMetadataRepository;
 
+import java.util.Arrays;
 import java.util.Map;
 
 @Service
@@ -26,5 +27,9 @@ public class SongMetadataService {
         Map<String, String> userMetadata = objectMetadata.getUserMetadata();
         userMetadata.values().forEach(s-> stringBuilder.append(s+" : "+userMetadata.get(s)+", "));
         return stringBuilder.toString();
+    }
+
+    public void deleteById(Integer[] id) {
+        songMetadataRepository.deleteAllById(Arrays.stream(id).toList());
     }
 }

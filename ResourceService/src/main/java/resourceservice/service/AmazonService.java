@@ -2,24 +2,26 @@ package resourceservice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import resourceservice.model.Song;
 import resourceservice.model.SongDTO;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class AmazonSaverService {
+public class AmazonService {
     private final AmazonS3 amazonS3;
     private final MetadataExtractor metadataExtractor;
 
@@ -36,6 +38,18 @@ public class AmazonSaverService {
         log.info("metada={}", objectMetadata.getUserMetadata().size());
         amazonS3.createBucket(bucketName);
         amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile, objectMetadata));
+    }
+
+    @Async
+    public byte [] getSongById(Integer id, String bucketName) {
+        S3Object object = amazonS3.getObject(bucketName, id.toString());
+        byte[] audiobyte = null;
+        try {
+           audiobyte = object.getObjectContent().readAllBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return audiobyte;
     }
 
 
@@ -55,5 +69,10 @@ public class AmazonSaverService {
         objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
         objectMetadata.setUserMetadata(objectMetadata1.getUserMetadata());
         return objectMetadata;
+    }
+    @Async
+    public void deleteSongs(List<Song> songs) {
+        songs.forEach(song -> amazonS3.deleteObject(song.getSongAWSBucketName(), song.getId().toString()));
+
     }
 }

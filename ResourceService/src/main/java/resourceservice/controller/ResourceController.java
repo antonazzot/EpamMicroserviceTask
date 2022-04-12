@@ -28,17 +28,22 @@ public class ResourceController {
 
     @PostMapping
     @ResponseBody
-    @SneakyThrows
     public ResponseEntity<?> saveFile (@RequestBody MultipartFile file) {
         if (songService.validateFile(file))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new IllegalArgumentException("foo"));
-
+            return ResponseEntity.badRequest().body(new IllegalArgumentException("File mustn't be empty or file format not supported"));
         return ResponseEntity.of(songService.saveSong(file).describeConstable());
     }
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<?> ok () {
-        return ResponseEntity.ok("get");
+    public ResponseEntity<?> get (@RequestParam (name = "id") Integer id) {
+        return songService.getSongById(id);
     }
+
+    @DeleteMapping
+    @ResponseBody
+    public ResponseEntity<?> delete (@RequestParam ("deleteid") Integer [] id) {
+        return ResponseEntity.ok(songService.deleteSongById(id));
+    }
+
 }
