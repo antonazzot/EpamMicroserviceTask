@@ -1,11 +1,13 @@
 package songservice.controller;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.metadata.Metadata;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import resourceprocessor.dto.MetadataDTO;
 import songservice.service.SongMetadataService;
 
 @RestController
@@ -16,17 +18,17 @@ public class SongMetadataController {
 
     private final SongMetadataService songMetadataService;
 
-    @PostMapping("/{metaid}")
+    @PostMapping("/save/{metadatadto}")
     @ResponseBody
-    @SneakyThrows
-    public ResponseEntity<?> saveMetadata (@RequestParam Integer metaid, @RequestBody Metadata metadata) {
-        songMetadataService.saveSong(metaid, metadata.toString());
+    public Integer saveMetadata (@RequestBody MetadataDTO metadatadto) {
+      return songMetadataService.saveSong(metadatadto);
+    }
 
-//        PutObjectResult putObjectResult = amazonS3.putObject("mybucketname", "secondname", file.getInputStream(), extractObjectMetadata(file));
-//       File file1 = convertMultiPartToFile(file);
-//        restTemplate.postForObject("http://PARSER/parser/parse/{file}", file1,
-//        String.class, file1);
-        return ResponseEntity.ok(2);
+    @PostMapping("/save1/{id}")
+    @ResponseBody
+    public Integer saveMetadata (@RequestParam Integer id) {
+        log.info("id={}: ", id);
+      return id;
     }
 
 

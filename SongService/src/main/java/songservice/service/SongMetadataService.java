@@ -2,6 +2,7 @@ package songservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import resourceprocessor.dto.MetadataDTO;
 import songservice.model.SongMetadata;
 import songservice.repository.SongMetadataRepository;
 
@@ -11,10 +12,10 @@ public class SongMetadataService {
 
     private final SongMetadataRepository songMetadataRepository;
 
-    public Integer saveSong (Integer songId, String metaData) {
-       return songMetadataRepository.save(SongMetadata.builder()
-                       .id(songId)
-                       .metadata(metaData)
-               .build()).getId();
+    public Integer saveSong (MetadataDTO metadataDTO) {
+        SongMetadata songMetadata =  SongMetadata.builder()
+                .id(metadataDTO.getSongId())
+                .metadata(metadataDTO.getObjectMetadata().toString()).build();
+       return songMetadataRepository.save(songMetadata).getId();
     }
 }

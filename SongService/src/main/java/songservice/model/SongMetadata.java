@@ -15,5 +15,6 @@ import javax.persistence.*;
 public class SongMetadata {
     @Id
     Integer id;
+    @Column (name = "matadata")
     String metadata;
 }

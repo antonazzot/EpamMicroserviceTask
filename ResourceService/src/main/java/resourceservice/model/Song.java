@@ -3,10 +3,7 @@ package resourceservice.model;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +15,10 @@ public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
+    @Column (name = "songname")
+    String songName;
+    @Column (name = "songsize")
+    Long songSize;
+    @Column (name = "bucket")
+    String songAWSBucketName;
 }
