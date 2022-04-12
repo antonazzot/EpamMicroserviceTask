@@ -9,7 +9,12 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 @RestController
 @Slf4j
@@ -18,14 +23,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class ResourceController {
 
     private final AmazonS3 amazonS3;
+    private final RestTemplate restTemplate;
 
     @PostMapping
     @ResponseBody
     @SneakyThrows
     public ResponseEntity<?> saveFile (@RequestBody MultipartFile file) {
         log.info("fileinfo:={}", file.getContentType()+"  " + file.getName() + "   "+  file.getSize()) ;
-        Bucket mybucketname = amazonS3.createBucket("mybucketname");
-        PutObjectResult putObjectResult = amazonS3.putObject("onexlab", "secondname", file.getInputStream(), extractObjectMetadata(file));
+        amazonS3.createBucket("mybucketname");
+        PutObjectResult putObjectResult = amazonS3.putObject("mybucketname", "secondname", file.getInputStream(), extractObjectMetadata(file));
+       File file1 = convertMultiPartToFile(file);
+        restTemplate.postForObject("http://PARSER/parser/parse/{file}", file1,
+        String.class, file1);
         return ResponseEntity.ok(2);
     }
 
@@ -33,6 +42,7 @@ public class ResourceController {
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
         objectMetadata.setContentLength(file.getSize());
+
         objectMetadata.setContentType(file.getContentType());
 
         objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
@@ -45,5 +55,13 @@ public class ResourceController {
     public ResponseEntity<?> ok () {
 
         return ResponseEntity.ok("get");
+    }
+    private File convertMultiPartToFile(MultipartFile file ) throws IOException
+    {
+        File convFile = new File( file.getOriginalFilename() );
+        FileOutputStream fos = new FileOutputStream( convFile );
+        fos.write( file.getBytes() );
+        fos.close();
+        return convFile;
     }
 }

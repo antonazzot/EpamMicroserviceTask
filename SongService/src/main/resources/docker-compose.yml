@@ -1,0 +1,20 @@
+
+version: '3.7'
+
+services:
+  postgres:
+    container_name: metadata
+    image: postgres:13.6
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=metadata
+#     logging:
+#       options:
+#         max-size: 10m
+#         max-file: "3"
+    ports:
+      - '5434:5432'
+    volumes:
+      - ./script/sql:/docker-entrypoint-initdb.d/

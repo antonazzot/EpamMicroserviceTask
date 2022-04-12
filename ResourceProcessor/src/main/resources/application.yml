@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: PARSER
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5435/song
+    username: postgres
+    driver: org.postgresql.Drive
+
+
+eureka:
+  client:
+    server-url:
+      defaultZone: http://localhost:8761/

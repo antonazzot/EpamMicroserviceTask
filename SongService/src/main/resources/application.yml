@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: METADATA
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5434/metadata
+    username: postgres
+    driver: org.postgresql.Drive
+
+eureka:
+  client:
+    server-url:
+      defaultZone: http://localhost:8761/

@@ -6,7 +6,9 @@
     <modules>
         <module>ResourceService</module>
 		<module>EurekaServerService</module>
-	</modules>
+        <module>ResourceProcessor</module>
+        <module>SongService</module>
+    </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
