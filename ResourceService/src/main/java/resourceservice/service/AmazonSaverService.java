@@ -23,7 +23,7 @@ public class AmazonSaverService {
     private final AmazonS3 amazonS3;
     private final MetadataExtractor metadataExtractor;
 
-
+    @Async
     @SneakyThrows
     public void extractMetaAndPutS3 (Integer songId, MultipartFile multipartFile, String bucketName) {
         SongDTO songDTO = SongDTO.builder()
@@ -35,7 +35,7 @@ public class AmazonSaverService {
 
         log.info("metada={}", objectMetadata.getUserMetadata().size());
         amazonS3.createBucket(bucketName);
-        amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), objectMetadata);
+        amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile, objectMetadata));
     }
 
 
@@ -46,5 +46,14 @@ public class AmazonSaverService {
         fos.write( file.getBytes() );
         fos.close();
         return convFile;
+    }
+
+    private ObjectMetadata extractObjectMetadata(MultipartFile file, ObjectMetadata objectMetadata1) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
+        objectMetadata.setUserMetadata(objectMetadata1.getUserMetadata());
+        return objectMetadata;
     }
 }
