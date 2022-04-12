@@ -32,7 +32,7 @@ public class AmazonSaverService {
                 .build();
 
         ObjectMetadata objectMetadata = metadataExtractor.extractMetadata(songDTO);
-        objectMetadata.
+
         log.info("metada={}", objectMetadata.getUserMetadata().size());
         amazonS3.createBucket(bucketName);
         amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), objectMetadata);
