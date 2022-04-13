@@ -5,21 +5,17 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import lombok.Data;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
 @Data
 @Configuration
 public class AmazoneS3Config {
 
     @Value("${aws.s3.endpoint-url}")
     private String endpointUrl;
-
 
     @Bean
     public AmazonS3 amazonS3() {

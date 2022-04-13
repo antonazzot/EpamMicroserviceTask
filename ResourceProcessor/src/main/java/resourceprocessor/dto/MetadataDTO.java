@@ -13,7 +13,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class MetadataDTO implements Serializable {
-
     private Integer songId;
     private ObjectMetadata objectMetadata;
 }
