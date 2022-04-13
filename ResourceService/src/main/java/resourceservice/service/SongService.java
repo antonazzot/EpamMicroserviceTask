@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,9 +25,15 @@ public class SongService {
 
     private final SongRepository songRepository;
     private final AmazonService amazonService;
+    private final FileValidator fileValidatorService;
+    private final DeleteInterfece deleteService;
+    private final MetadataExtractorInterfece metadataExtractor;
 
 
-    public Integer saveSong (MultipartFile file) {
+    public ResponseEntity<?> saveSong (MultipartFile file) {
+
+        if (fileValidatorService.validateFile(file))
+            return ResponseEntity.badRequest().body(new IllegalArgumentException("File mustn't be empty or file format not supported"));
 
         Song song = Song.builder()
                 .songName(file.getName())
@@ -36,7 +43,7 @@ public class SongService {
 
         Integer songId = songRepository.save(song).getId();
         amazonService.extractMetaAndPutS3(songId, file, bucketName);
-        return songId;
+        return ResponseEntity.ok(songId);
     }
 
     public ResponseEntity <?> getSongById (Integer id) {
@@ -52,10 +59,18 @@ public class SongService {
         return Boolean.FALSE;
     }
 
-    public Integer [] deleteSongById(Integer[] id) {
+    public ResponseEntity<?> deleteSongById(Integer[] id) {
         List<Song> songs = songRepository.findAllById(Arrays.asList(id));
-        songRepository.deleteAllById(Arrays.asList(id));
+
+        songRepository.deleteAllById(songs.stream().map(Song::getId).collect(Collectors.toList()));
         amazonService.deleteSongs(songs);
-        return id;
+        deleteService.deleteFromMetadata(id);
+        int[] result =  songs.stream().mapToInt(Song::getId).toArray();
+
+        return ResponseEntity.of(Optional.of(result));
+    }
+
+    public ResponseEntity<?> getMetaById(Integer id) {
+      return  ResponseEntity.of(Optional.of(metadataExtractor.getMetadataFromBD(id)));
     }
 }

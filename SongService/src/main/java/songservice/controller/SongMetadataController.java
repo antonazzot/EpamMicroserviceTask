@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import resourceprocessor.dto.MetadataDTO;
 import songservice.service.SongMetadataService;
 
+import java.util.Optional;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -26,23 +28,14 @@ public class SongMetadataController {
 
     @DeleteMapping("/delete/{deleteid}")
     @ResponseBody
-    public void deleteMetadata (@RequestParam Integer [] id) {
-        songMetadataService.deleteById(id);
+    public void deleteMetadata (@PathVariable Integer [] deleteid) {
+        songMetadataService.deleteById(deleteid);
     }
 
-    @PostMapping("/save1/{id}")
+    @GetMapping("/songs/{id}")
     @ResponseBody
-    public Integer saveMetadata (@RequestParam Integer id) {
-        log.info("id={}: ", id);
-      return id;
-    }
-
-
-    @GetMapping
-    @ResponseBody
-    public ResponseEntity<?> ok () {
-
-        return ResponseEntity.ok("get");
+    public Optional<String> getSongsMetadata (@PathVariable(name = "id") Integer id) {
+        return songMetadataService.getSongsById(id);
     }
 
 }

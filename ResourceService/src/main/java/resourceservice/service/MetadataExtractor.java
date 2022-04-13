@@ -9,11 +9,16 @@ import resourceservice.model.SongDTO;
 
 @Service
 @RequiredArgsConstructor
-public class MetadataExtractor {
+public class MetadataExtractor implements MetadataExtractorInterfece {
     private final RestTemplate restTemplate;
 
     public ObjectMetadata extractMetadata (SongDTO songDTO) {
         return restTemplate.postForObject("http://PARSER/parser/parse/{file}", songDTO,
                 ObjectMetadata.class, songDTO);
+    }
+
+    public String getMetadataFromBD (Integer id) {
+        return restTemplate.getForObject("http://METADATA/metadata/songs/{id}", String.class,
+                id);
     }
 }
