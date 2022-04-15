@@ -10,6 +10,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.multipart.MultipartFile;
 import resourceservice.config.KafakaSender;
 import resourceservice.model.Song;
@@ -30,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
 public class AmazonService {
     private final AmazonS3 amazonS3;
     private final MetadataExtractor metadataExtractor;
-    private final KafkaTemplate<String, SongDTO> kafkaTemplate;
+    private final KafkaTemplate<String, SongDTO> kafkaSongTemplate;
     private final KafakaSender kafakaSender;
 
     @Async
@@ -47,13 +48,11 @@ public class AmazonService {
 
 //        SongDTO songDtoWithUserMeta = kafakaSender.sendMessageWithCallback(songDTO);
 
-        CompletableFuture<SendResult<String, SongDTO>> uploadsong = kafkaTemplate.send("uploadsong", songDTO).completable();
+        CompletableFuture<SendResult<String, SongDTO>> uploadsong = kafkaSongTemplate.send("uploadsong", songDTO).completable();
         SongDTO songDtoWithUserMeta = uploadsong.get().getProducerRecord().value();
 
 //        kafkaSongTemplate.send("uploadmeta", songDtoWithUserMeta);
         ObjectMetadata objectMetadata = extractObjectMetadata(multipartFile, songDtoWithUserMeta.getUserMetadata());
-
-
 
 //        ObjectMetadata objectMetadata = metadataExtractor.extractMetadata(songDTO);
 

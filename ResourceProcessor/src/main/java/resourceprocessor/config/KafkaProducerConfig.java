@@ -30,12 +30,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, MetadataDTO> producerObjectFactory() {
+    public ProducerFactory<String, SongDTO> producerObjectFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, MetadataDTO> kafkaMetaTemplate(@Autowired ProducerFactory<String, MetadataDTO> producerObjectFactory) {
+    public KafkaTemplate<String, SongDTO> kafkaTemplate(@Autowired ProducerFactory<String, SongDTO> producerObjectFactory) {
         return new KafkaTemplate<>(producerObjectFactory);
     }
 }

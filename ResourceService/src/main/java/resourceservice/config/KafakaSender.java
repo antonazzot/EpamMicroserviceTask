@@ -15,11 +15,11 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class KafakaSender {
 
-    private final KafkaTemplate <String, SongDTO> kafkaSongTemplate;
+    private final KafkaTemplate <String, SongDTO> kafkaTemplate;
 
       public SongDTO sendMessageWithCallback(SongDTO songDTO) throws ExecutionException, InterruptedException {
             ListenableFuture<SendResult<String, SongDTO>> future =
-                    kafkaSongTemplate.send("uploadsong", songDTO);
+                    kafkaTemplate.send("uploadsong", songDTO);
 
             future.addCallback(new ListenableFutureCallback<SendResult<String, SongDTO>>() {
                @Override

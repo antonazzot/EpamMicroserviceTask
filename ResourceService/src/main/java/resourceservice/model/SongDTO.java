@@ -17,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 @ToString
-public class SongDTO implements Serializable{
+public class SongDTO {
     private Integer id;
     private File file;
 //    private ObjectMetadata objectMetadata;
