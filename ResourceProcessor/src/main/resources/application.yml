@@ -9,6 +9,10 @@ spring:
     url: jdbc:postgresql://localhost:5435/song
     username: postgres
     driver: org.postgresql.Drive
+  kafka:
+    bootstrap-servers: localhost:9092
+    listener:
+      ack-mode: manual
 
 
 eureka:

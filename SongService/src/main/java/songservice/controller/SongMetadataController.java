@@ -19,7 +19,7 @@ public class SongMetadataController {
     @PostMapping("/save/{metadatadto}")
     @ResponseBody
     public Integer saveMetadata (@RequestBody MetadataDTO metadatadto) {
-      return songMetadataService.saveSong(metadatadto);
+      return songMetadataService.saveSongMetadata(metadatadto);
     }
 
     @DeleteMapping("/delete/{deleteid}")

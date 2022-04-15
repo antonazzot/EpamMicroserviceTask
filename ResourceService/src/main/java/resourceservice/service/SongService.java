@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import resourceservice.model.Song;
+import resourceservice.model.SongDTO;
 import resourceservice.repository.SongRepository;
 
 import java.util.Arrays;
@@ -28,6 +30,7 @@ public class SongService {
     private final FileValidator fileValidatorService;
     private final DeleteInterfece deleteService;
     private final MetadataExtractorInterfece metadataExtractor;
+
 
 
     public ResponseEntity<?> saveSong (MultipartFile file) {

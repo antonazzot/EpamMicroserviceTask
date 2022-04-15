@@ -11,7 +11,7 @@ public class MetaDataConvertorString implements MetaDataConvertor {
     public String getMetadata(ObjectMetadata objectMetadata) {
         StringBuilder stringBuilder = new StringBuilder();
         Map<String, String> userMetadata = objectMetadata.getUserMetadata();
-        userMetadata.values().forEach(s-> stringBuilder.append(s+" : "+userMetadata.get(s)+", "));
+        userMetadata.values().forEach(s-> stringBuilder.append(s).append(" : ").append(userMetadata.get(s)).append(", "));
         return stringBuilder.toString();
 }
 }

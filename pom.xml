@@ -8,6 +8,7 @@
 		<module>EurekaServerService</module>
         <module>ResourceProcessor</module>
         <module>SongService</module>
+        <module>Kafka</module>
     </modules>
     <parent>
 		<groupId>org.springframework.boot</groupId>

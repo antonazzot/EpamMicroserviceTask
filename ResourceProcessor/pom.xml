@@ -47,7 +47,7 @@
             <artifactId>spring-jdbc</artifactId>
             <version>5.3.18</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-parser-audiovideo-module -->
+
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parser-audiovideo-module</artifactId>
@@ -64,6 +64,14 @@
             <artifactId>ResourceService</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
 
