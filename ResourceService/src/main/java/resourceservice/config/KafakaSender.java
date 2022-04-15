@@ -15,11 +15,11 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class KafakaSender {
 
-    private final KafkaTemplate <String, SongDTO> kafkaTemplate;
+    private final KafkaTemplate <String, SongDTO> kafkaSongTemplate;
 
-      public SongDTO sendMessageWithCallback(SongDTO songDTO) throws ExecutionException, InterruptedException {
+      public void sendMessageWithCallback(SongDTO songDTO) throws ExecutionException, InterruptedException {
             ListenableFuture<SendResult<String, SongDTO>> future =
-                    kafkaTemplate.send("uploadsong", songDTO);
+                    kafkaSongTemplate.send("uploadsong", songDTO);
 
             future.addCallback(new ListenableFutureCallback<SendResult<String, SongDTO>>() {
                @Override
@@ -27,6 +27,7 @@ public class KafakaSender {
 //                    LOG.info("Message [{}] delivered with offset {}",
 //                            message,
 //                            result.getRecordMetadata().offset());
+
                 }
 
                 @Override
@@ -35,7 +36,7 @@ public class KafakaSender {
                     ex.getMessage();
                 }
             });
-           return future.get().getProducerRecord().value();
+
         }
 }
 

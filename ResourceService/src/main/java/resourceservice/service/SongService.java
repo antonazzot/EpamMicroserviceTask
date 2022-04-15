@@ -28,7 +28,7 @@ public class SongService {
     private final SongRepository songRepository;
     private final AmazonService amazonService;
     private final FileValidator fileValidatorService;
-    private final DeleteInterfece deleteService;
+    private final DeleteInterfece deleteByKafka;
     private final MetadataExtractorInterfece metadataExtractor;
 
 
@@ -67,7 +67,7 @@ public class SongService {
 
         songRepository.deleteAllById(songs.stream().map(Song::getId).collect(Collectors.toList()));
         amazonService.deleteSongs(songs);
-        deleteService.deleteFromMetadata(id);
+        deleteByKafka.deleteFromMetadata(id);
         int[] result =  songs.stream().mapToInt(Song::getId).toArray();
 
         return ResponseEntity.of(Optional.of(result));

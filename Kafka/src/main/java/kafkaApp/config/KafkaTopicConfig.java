@@ -16,4 +16,9 @@ public class KafkaTopicConfig {
     public NewTopic uploadMetadataTopic (){
         return TopicBuilder.name("uploadmeta").build();
     }
+
+    @Bean
+    public NewTopic deleteSongTopic (){
+        return TopicBuilder.name("deletesong").build();
+    }
 }

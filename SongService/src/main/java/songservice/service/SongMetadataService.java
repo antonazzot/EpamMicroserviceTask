@@ -27,15 +27,15 @@ public class SongMetadataService {
     }
 
 
-    public void deleteById(Integer [] id) {
+    public void deleteById(List <Integer>  id) {
 //        Iterable<SongMetadata> allById = songMetadataRepository.findAllById(Arrays.asList(id));
 //        List <Integer> integerList = new ArrayList<>();
 //        for (SongMetadata songMetadata : allById) {
 //            integerList.add(songMetadata.getId());
 //        }
-        List<Integer> integerList = Arrays.asList(id);
+
         songMetadataRepository.
-                deleteAllById(integerList);
+                deleteAllById(id);
     }
 
     public Optional <String> getSongsById(Integer id) {

@@ -17,6 +17,7 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import resourceservice.model.SongDTO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -32,7 +33,7 @@ public class KafkaMetaConsumer {
 //        prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         prop.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
-        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup2");
+//        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup2");
         return prop;
     }
 
@@ -40,19 +41,6 @@ public class KafkaMetaConsumer {
     public ConsumerFactory<String, SongDTO> consumerObjectFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(SongDTO.class));
     }
-
-
-//    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SongDTO>> kafkaListenerContainerFactory (ConsumerFactory<String, SongDTO>  consumerObjectFactory) {
-//
-//        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(consumerObjectFactory);
-//        return factory;
-//    }
-//
-//    @Bean
-//    public ConsumerFactory<String, String> consumerFactory() {
-//        return new DefaultKafkaConsumerFactory<>(consumerConfig());
-//    }
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory() {
@@ -63,11 +51,20 @@ public class KafkaMetaConsumer {
         return factory;
     }
 
-//    @Bean
-//    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SongDTO>> kafkaListenerContainerFactory() {
-//        ConcurrentKafkaListenerContainerFactory<String, SongDTO> listener = new ConcurrentKafkaListenerContainerFactory<>();
-//        listener.setConsumerFactory(consumerObjectFactory());
-//        return listener;
-//    }
+
+    @Bean
+    public ConsumerFactory<String, List<Integer>> consumerListFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(List.class));
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, List<Integer>> kafkaListJsonListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, List<Integer>> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerListFactory());
+        factory.setMessageConverter(new StringJsonMessageConverter());
+        return factory;
+    }
+
+
 }
-//}

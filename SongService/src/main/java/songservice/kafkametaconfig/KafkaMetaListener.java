@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import resourceservice.model.SongDTO;
 import songservice.service.SongMetadataService;
 
+import java.util.List;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -22,5 +24,17 @@ public class KafkaMetaListener {
         log.info("SONGDTO ={}", songDTO.getId());
 
            songMetadataService.saveSongMetadataFromKafka(songDTO);
+    }
+
+    @org.springframework.kafka.annotation.KafkaListener(topics = "deletesong",
+            groupId = "mygroup3")
+    public void factoryList (String message) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List list = objectMapper.readValue(message, List.class);
+
+        list.forEach(System.out::println);
+
+        songMetadataService.deleteById(list);
+
     }
 }

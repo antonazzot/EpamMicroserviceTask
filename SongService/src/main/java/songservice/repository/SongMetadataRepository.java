@@ -7,9 +7,4 @@ import org.springframework.transaction.annotation.Transactional;
 import songservice.model.SongMetadata;
 
 public interface SongMetadataRepository extends CrudRepository<SongMetadata, Integer> {
-
-    @Transactional
-    @Modifying
-    @Query("delete from SongMetadata s where s.id = ?1")
-    void deleteAllById(Iterable<? extends Integer> integers);
 }

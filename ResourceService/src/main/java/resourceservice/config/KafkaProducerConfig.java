@@ -18,6 +18,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 import resourceservice.model.SongDTO;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @Slf4j
 @Configuration
@@ -57,6 +58,18 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, SongDTO> kafkaSongTemplate(@Autowired ProducerFactory<String, SongDTO> producerObjectFactory) {
         return new KafkaTemplate<>(producerObjectFactory);
+    }
+
+
+
+    @Bean
+    public ProducerFactory<String, List<Integer>> producerListFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, List<Integer>> kafkaDeleteTemplate(@Autowired ProducerFactory<String, List<Integer>> producerListFactory) {
+        return new KafkaTemplate<>(producerListFactory);
     }
 
 }

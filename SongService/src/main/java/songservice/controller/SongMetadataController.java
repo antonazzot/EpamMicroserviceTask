@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import resourceprocessor.dto.MetadataDTO;
 import songservice.service.SongMetadataService;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @RestController
@@ -25,7 +26,7 @@ public class SongMetadataController {
     @DeleteMapping("/delete/{deleteid}")
     @ResponseBody
     public void deleteMetadata (@PathVariable Integer [] deleteid) {
-        songMetadataService.deleteById(deleteid);
+        songMetadataService.deleteById(Arrays.asList(deleteid));
     }
 
     @GetMapping("/songs/{id}")

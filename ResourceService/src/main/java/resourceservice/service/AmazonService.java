@@ -41,24 +41,12 @@ public class AmazonService {
                 .id(songId)
                 .file(convertMultiPartToFile(multipartFile))
                 .userMetadata(new HashMap<>())
-//               .objectMetadata(new ObjectMetadata())
                 .build();
 
-//        kafkaTemplate.send("uploadsong", songDTO);
+        kafkaSongTemplate.send("uploadsong", songDTO).completable();
 
-//        SongDTO songDtoWithUserMeta = kafakaSender.sendMessageWithCallback(songDTO);
-
-        CompletableFuture<SendResult<String, SongDTO>> uploadsong = kafkaSongTemplate.send("uploadsong", songDTO).completable();
-        SongDTO songDtoWithUserMeta = uploadsong.get().getProducerRecord().value();
-
-//        kafkaSongTemplate.send("uploadmeta", songDtoWithUserMeta);
-        ObjectMetadata objectMetadata = extractObjectMetadata(multipartFile, songDtoWithUserMeta.getUserMetadata());
-
-//        ObjectMetadata objectMetadata = metadataExtractor.extractMetadata(songDTO);
-
-        log.info("metada={}", objectMetadata.getUserMetadata().size());
         amazonS3.createBucket(bucketName);
-        amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), objectMetadata);
+        amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile));
     }
 
     @Async
@@ -73,7 +61,6 @@ public class AmazonService {
         return audiobyte;
     }
 
-
     private File convertMultiPartToFile(MultipartFile file ) throws IOException
     {
         File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
@@ -83,12 +70,11 @@ public class AmazonService {
         return convFile;
     }
 
-    private ObjectMetadata extractObjectMetadata(MultipartFile file, Map <String, String> usermetadata) {
+    private ObjectMetadata extractObjectMetadata(MultipartFile file) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
-        objectMetadata.setUserMetadata(usermetadata);
         return objectMetadata;
     }
     @Async
