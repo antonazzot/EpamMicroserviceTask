@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -43,7 +44,13 @@ public class AmazonService {
                 .userMetadata(new HashMap<>())
                 .build();
 
-        kafkaSongTemplate.send("uploadsong", songDTO).completable();
+        try {
+            kafakaSender.sendMessageWithCallback(songDTO);
+        }
+        catch (Throwable ex) {
+            log.error(ex.getMessage());
+        }
+
 
         amazonS3.createBucket(bucketName);
         amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile));

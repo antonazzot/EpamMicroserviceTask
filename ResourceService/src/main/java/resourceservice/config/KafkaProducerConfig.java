@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.kafka.support.ProducerListener;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -61,7 +63,6 @@ public class KafkaProducerConfig {
     }
 
 
-
     @Bean
     public ProducerFactory<String, List<Integer>> producerListFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
@@ -71,5 +72,6 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, List<Integer>> kafkaDeleteTemplate(@Autowired ProducerFactory<String, List<Integer>> producerListFactory) {
         return new KafkaTemplate<>(producerListFactory);
     }
+
 
 }
