@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Description;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -52,6 +54,9 @@ public class KafkaProducerConfig {
         return kafkaTemplate;
     }
 
+    /**
+     *  SongDTO Producer */
+
     @Bean
     public ProducerFactory<String, SongDTO> producerObjectFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
@@ -62,7 +67,8 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerObjectFactory);
     }
 
-
+    /**
+     *  Delete by id's list Producer */
     @Bean
     public ProducerFactory<String, List<Integer>> producerListFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
@@ -72,6 +78,50 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, List<Integer>> kafkaDeleteTemplate(@Autowired ProducerFactory<String, List<Integer>> producerListFactory) {
         return new KafkaTemplate<>(producerListFactory);
     }
+
+    /**
+     *  Get metadata by id's Producer */
+    @Bean
+    public ProducerFactory<String, Integer> producerGetMetaFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public ProducerFactory<String, String> producerStrFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaStrTemplate(@Autowired ProducerFactory<String, String> producerStrFactory) {
+        return new KafkaTemplate<>(producerStrFactory);
+    }
+
+
+    @Bean
+    public ConcurrentMessageListenerContainer<String, String> repliesContainer(
+            ConcurrentKafkaListenerContainerFactory<String, String> kafkaStrListenerContainerFactory) {
+
+        ConcurrentMessageListenerContainer<String, String> repliesContainer =
+                kafkaStrListenerContainerFactory.createContainer("receivemeta");
+        repliesContainer.getContainerProperties().setGroupId("group5");
+        repliesContainer.setAutoStartup(false);
+        return repliesContainer;
+    }
+
+    @Bean
+    public ReplyingKafkaTemplate<String, Integer, String> replyingTemplate(
+         @Autowired   ProducerFactory<String, Integer> producerGetMetaFactory,
+          @Autowired  ConcurrentMessageListenerContainer<String, String> repliesContainer) {
+        return new ReplyingKafkaTemplate<>(producerGetMetaFactory, repliesContainer);
+    }
+
+
+
+    @Bean
+    public KafkaTemplate<String, Integer> kafkaGetMetaTemplate(@Autowired ProducerFactory<String, Integer> producerGetMetaFactory) {
+        return new KafkaTemplate<>(producerGetMetaFactory);
+    }
+
 
 
 }

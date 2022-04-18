@@ -31,11 +31,7 @@ public class KafkaConsumerConfig {
     public Map<String, Object> consumerConfig() {
         HashMap<String, Object> prop = new HashMap<>();
         prop.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapservers);
-//        prop.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         prop.put(org.springframework.kafka.support.serializer.JsonDeserializer.TRUSTED_PACKAGES, "*");
-
-//        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup2");
         return prop;
     }
 
@@ -44,25 +40,11 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(SongDTO.class));
     }
 
-
-//    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SongDTO>> kafkaListenerContainerFactory (ConsumerFactory<String, SongDTO>  consumerObjectFactory) {
-//
-//        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(consumerObjectFactory);
-//        return factory;
-//    }
-//
-//    @Bean
-//    public ConsumerFactory<String, String> consumerFactory() {
-//        return new DefaultKafkaConsumerFactory<>(consumerConfig());
-//    }
-
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerObjectFactory());
-
         factory.setMessageConverter(new StringJsonMessageConverter());
         return factory;
     }
@@ -72,15 +54,7 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerObjectFactory());
         factory.setReplyTemplate(kafkaTemplate);
-        // Comment the RecordFilterStrategy if Filtering is not required
-//        factory.setRecordFilterStrategy(record -> record.value().contains("ignored"));
         return factory;
     }
 
-//    @Bean
-//    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory(ConsumerFactory<String, String>  consumerObjectFactory) {
-//        ConcurrentKafkaListenerContainerFactory<String, String> listener = new ConcurrentKafkaListenerContainerFactory<>();
-//        listener.setConsumerFactory(consumerObjectFactory);
-//        return listener;
-//    }
 }

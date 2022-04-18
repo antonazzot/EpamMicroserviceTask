@@ -20,10 +20,7 @@ public class KafkaListener {
     @org.springframework.kafka.annotation.KafkaListener(topics = "uploadsong",
                 groupId = "mygroup1")
     @SendTo("uploadmeta")
-    public SongDTO listener (SongDTO songDTO) throws JsonProcessingException {
-//       ObjectMapper objectMapper = new ObjectMapper();
-//        SongDTO songDTO = objectMapper.readValue(message, SongDTO.class);
-        System.out.println(songDTO.getId());
+    public SongDTO listener (SongDTO songDTO)  {
         return processorService.extractMetadataAndSave(songDTO);
     }
 }

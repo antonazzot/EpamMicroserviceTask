@@ -29,7 +29,6 @@ public class KafakaSender {
           ListenableFuture<SendResult<String, SongDTO>> future =
                     kafkaSongTemplate.send("uploadsong", songDTO.getId().toString(), songDTO);
 
-
           future.addCallback(new ListenableFutureCallback<SendResult<String, SongDTO>>() {
 
               @Override

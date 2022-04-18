@@ -43,14 +43,12 @@ public class AmazonService {
                 .file(convertMultiPartToFile(multipartFile))
                 .userMetadata(new HashMap<>())
                 .build();
-
         try {
             kafakaSender.sendMessageWithCallback(songDTO);
         }
         catch (Throwable ex) {
             log.error(ex.getMessage());
         }
-
 
         amazonS3.createBucket(bucketName);
         amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile));

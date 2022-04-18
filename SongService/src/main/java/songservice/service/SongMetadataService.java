@@ -33,13 +33,16 @@ public class SongMetadataService {
 //        for (SongMetadata songMetadata : allById) {
 //            integerList.add(songMetadata.getId());
 //        }
-
         songMetadataRepository.
                 deleteAllById(id);
     }
 
     public Optional <String> getSongsById(Integer id) {
         return Optional.of(songMetadataRepository.findById(id).orElseThrow().getMetadata());
+    }
+
+    public Optional<SongMetadata> getSongMetaById (Integer id) {
+        return songMetadataRepository.findById(id);
     }
 
     public void saveSongMetadataFromKafka(SongDTO songDTO) {

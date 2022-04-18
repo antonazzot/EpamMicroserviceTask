@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import resourceservice.model.SongDTO;
+import songservice.model.SongMetadata;
 import songservice.service.SongMetadataService;
 
 import java.util.List;
@@ -36,5 +38,19 @@ public class KafkaMetaListener {
 
         songMetadataService.deleteById(list);
 
+    }
+
+    @org.springframework.kafka.annotation.KafkaListener(topics = "getmeta",
+            groupId = "mygroup4")
+    @SendTo("receivemeta")
+    public String metaFactory (String sid) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Integer id = objectMapper.readValue(sid, Integer.class);
+//
+//        list.forEach(System.out::println);
+
+        System.out.println("!!!!!!!!!" + id);
+
+       return songMetadataService.getSongMetaById(id).orElseThrow().getMetadata();
     }
 }

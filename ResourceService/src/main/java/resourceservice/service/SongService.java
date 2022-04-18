@@ -5,17 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import resourceservice.model.Song;
-import resourceservice.model.SongDTO;
 import resourceservice.repository.SongRepository;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +28,7 @@ public class SongService {
     private final SongRepository songRepository;
     private final AmazonService amazonService;
     private final FileValidator fileValidatorService;
-    private final DeleteInterfece deleteByKafka;
-    private final MetadataExtractorInterfece metadataExtractor;
-
-
+    private final KafkaService kafkaService;
 
     public ResponseEntity<?> saveSong (MultipartFile file) {
 
@@ -64,16 +61,14 @@ public class SongService {
 
     public ResponseEntity<?> deleteSongById(Integer[] id) {
         List<Song> songs = songRepository.findAllById(Arrays.asList(id));
-
         songRepository.deleteAllById(songs.stream().map(Song::getId).collect(Collectors.toList()));
         amazonService.deleteSongs(songs);
-        deleteByKafka.deleteFromMetadata(id);
+        kafkaService.deleteFromMetadata(id);
         int[] result =  songs.stream().mapToInt(Song::getId).toArray();
-
         return ResponseEntity.of(Optional.of(result));
     }
 
     public ResponseEntity<?> getMetaById(Integer id) {
-      return  ResponseEntity.of(Optional.of(metadataExtractor.getMetadataFromBD(id)));
+        return ResponseEntity.of(Optional.of(kafkaService.getMetaById(id)));
     }
 }

@@ -31,5 +31,4 @@ public class AmazoneS3Config {
     public RestTemplate restTemplate () {
         return new RestTemplate();
     }
-
 }

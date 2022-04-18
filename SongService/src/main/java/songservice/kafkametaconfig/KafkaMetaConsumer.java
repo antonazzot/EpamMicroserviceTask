@@ -29,11 +29,8 @@ public class KafkaMetaConsumer {
     public Map<String, Object> consumerConfig() {
         HashMap<String, Object> prop = new HashMap<>();
         prop.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapservers);
-//        prop.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-//        prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         prop.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 
-//        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup2");
         return prop;
     }
 

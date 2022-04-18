@@ -21,4 +21,20 @@ public class KafkaTopicConfig {
     public NewTopic deleteSongTopic (){
         return TopicBuilder.name("deletesong").build();
     }
+
+    @Bean
+    public NewTopic getMeta() {
+        return TopicBuilder.name("getmeta")
+                .partitions(10)
+                .replicas(2)
+                .build();
+    }
+
+    @Bean
+    public NewTopic kReplies() {
+        return TopicBuilder.name("receivemeta")
+                .partitions(10)
+                .replicas(2)
+                .build();
+    }
 }
