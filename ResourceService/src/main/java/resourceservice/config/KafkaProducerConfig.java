@@ -67,6 +67,25 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerObjectFactory);
     }
 
+    @Bean
+    public ConcurrentMessageListenerContainer<String, SongDTO> repliesDtoContainer(
+            ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory) {
+
+        ConcurrentMessageListenerContainer<String, SongDTO> repliesContainer =
+                kafkaJsonListenerContainerFactory.createContainer("uploadmeta");
+        repliesContainer.getContainerProperties().setGroupId("group6");
+        repliesContainer.setAutoStartup(false);
+        return repliesContainer;
+    }
+
+    @Bean
+    public ReplyingKafkaTemplate<String, SongDTO, SongDTO> replyingDtoTemplate(
+            @Autowired   ProducerFactory<String, SongDTO> producerObjectFactory,
+            @Autowired  ConcurrentMessageListenerContainer<String, SongDTO> repliesDtoContainer) {
+        return new ReplyingKafkaTemplate<>(producerObjectFactory, repliesDtoContainer);
+    }
+
+
     /**
      *  Delete by id's list Producer */
     @Bean

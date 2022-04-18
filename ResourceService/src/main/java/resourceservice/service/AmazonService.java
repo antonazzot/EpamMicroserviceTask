@@ -43,14 +43,25 @@ public class AmazonService {
                 .file(convertMultiPartToFile(multipartFile))
                 .userMetadata(new HashMap<>())
                 .build();
+
+        SongDTO receiveDto = null;
         try {
-            kafakaSender.sendMessageWithCallback(songDTO);
+          receiveDto =  kafakaSender.sendMessageWithCallback(songDTO);
         }
         catch (Throwable ex) {
             log.error(ex.getMessage());
         }
 
         amazonS3.createBucket(bucketName);
+
+
+        if (receiveDto!= null) {
+            System.out.println("!!!!!!!!!!!!");
+           receiveDto.getUserMetadata().values().forEach(System.out::println);
+            amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectFromDtoMetadata(multipartFile, receiveDto.getUserMetadata()));
+
+        }
+        else
         amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile));
     }
 
@@ -79,6 +90,15 @@ public class AmazonService {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
+        objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
+        return objectMetadata;
+    }
+
+    private ObjectMetadata extractObjectFromDtoMetadata(MultipartFile file, Map <String, String > userMeta) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setUserMetadata(userMeta);
         objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
         return objectMetadata;
     }

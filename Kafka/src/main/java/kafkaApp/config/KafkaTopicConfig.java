@@ -31,8 +31,16 @@ public class KafkaTopicConfig {
     }
 
     @Bean
-    public NewTopic kReplies() {
+    public NewTopic receiveMeta() {
         return TopicBuilder.name("receivemeta")
+                .partitions(10)
+                .replicas(2)
+                .build();
+    }
+
+    @Bean
+    public NewTopic receiveDto() {
+        return TopicBuilder.name("receivedto")
                 .partitions(10)
                 .replicas(2)
                 .build();
