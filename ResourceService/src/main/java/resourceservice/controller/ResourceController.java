@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import resourceservice.service.SongService;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -45,9 +42,7 @@ public class ResourceController {
     @GetMapping("/getmeta")
     @ResponseBody
     public ResponseEntity<?> getMetadata (@RequestParam (name = "id") Integer id) {
-
             return songService.getMetaById(id);
-
     }
 
 }

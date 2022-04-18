@@ -2,7 +2,6 @@ package resourceservice.service;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import resourceservice.model.SongDTO;
@@ -11,7 +10,6 @@ import resourceservice.model.SongDTO;
 @RequiredArgsConstructor
 public class MetadataExtractor implements MetadataExtractorInterfece {
     private final RestTemplate restTemplate;
-    private final KafkaTemplate <String, Integer> kafkaGetMetaTemplate;
 
     public ObjectMetadata extractMetadata (SongDTO songDTO) {
         return restTemplate.postForObject("http://PARSER/parser/parse/{file}", songDTO,
@@ -23,8 +21,4 @@ public class MetadataExtractor implements MetadataExtractorInterfece {
                 id);
     }
 
-    public String getMetadataFromBDWithKafka (Integer id) {
-       return id.toString();
-
-    }
 }

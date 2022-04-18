@@ -6,9 +6,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.stereotype.Service;
+import resourceservice.config.KafakaSender;
+import resourceservice.model.SongDTO;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @Service
@@ -18,6 +19,7 @@ public class KafkaService {
 
     private final ReplyingKafkaTemplate<String, Integer, String> replyingTemplate;
     private final DeleteInterfece deleteByKafka;
+    private final KafakaSender kafakaSender;
 
     public String getMetaById (Integer id) throws IllegalArgumentException {
         ConsumerRecord<String, String> getmeta = null;
@@ -35,5 +37,15 @@ public class KafkaService {
 
     public void deleteFromMetadata(Integer[] id) {
         deleteByKafka.deleteFromMetadata(id);
+    }
+
+    public SongDTO sendWithSongDtoReply (SongDTO songDTO) {
+        SongDTO result = null;
+        try {
+         result =  kafakaSender.sendMessageWithCallback(songDTO);
+        } catch (ExecutionException | InterruptedException | TimeoutException e) {
+           log.error(e.getMessage());
+        }
+        return result;
     }
 }

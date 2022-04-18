@@ -6,13 +6,9 @@ import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.multipart.MultipartFile;
-import resourceservice.config.KafakaSender;
 import resourceservice.model.Song;
 import resourceservice.model.SongDTO;
 
@@ -21,19 +17,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
 public class AmazonService {
     private final AmazonS3 amazonS3;
-    private final MetadataExtractor metadataExtractor;
-    private final KafkaTemplate<String, SongDTO> kafkaSongTemplate;
-    private final KafakaSender kafakaSender;
+    private final KafkaService kafkaService;
+    private final ObjectMetadataExtractor objectMetadataExtractor;
 
     @Async
     @SneakyThrows
@@ -44,25 +36,14 @@ public class AmazonService {
                 .userMetadata(new HashMap<>())
                 .build();
 
-        SongDTO receiveDto = null;
-        try {
-          receiveDto =  kafakaSender.sendMessageWithCallback(songDTO);
-        }
-        catch (Throwable ex) {
-            log.error(ex.getMessage());
-        }
+        SongDTO receiveDto = kafkaService.sendWithSongDtoReply(songDTO);
+
+        ObjectMetadata objectMetadata = null;
+        objectMetadata = receiveDto!=null ? objectMetadataExtractor.extractObjectMetadata(multipartFile, receiveDto.getUserMetadata())
+                : objectMetadataExtractor.extractObjectMetadata(multipartFile);
 
         amazonS3.createBucket(bucketName);
-
-
-        if (receiveDto!= null) {
-            System.out.println("!!!!!!!!!!!!");
-           receiveDto.getUserMetadata().values().forEach(System.out::println);
-            amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectFromDtoMetadata(multipartFile, receiveDto.getUserMetadata()));
-
-        }
-        else
-        amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), extractObjectMetadata(multipartFile));
+        amazonS3.putObject(bucketName, songId.toString(), multipartFile.getInputStream(), objectMetadata);
     }
 
     @Async
@@ -86,22 +67,6 @@ public class AmazonService {
         return convFile;
     }
 
-    private ObjectMetadata extractObjectMetadata(MultipartFile file) {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
-        objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
-        return objectMetadata;
-    }
-
-    private ObjectMetadata extractObjectFromDtoMetadata(MultipartFile file, Map <String, String > userMeta) {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
-        objectMetadata.setUserMetadata(userMeta);
-        objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
-        return objectMetadata;
-    }
     @Async
     public void deleteSongs(List<Song> songs) {
         songs.forEach(song -> amazonS3.deleteObject(song.getSongAWSBucketName(), song.getId().toString()));

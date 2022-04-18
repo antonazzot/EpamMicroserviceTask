@@ -25,7 +25,6 @@ public class AmazoneS3Config {
                 .withEndpointConfiguration(endpointConfiguration)
                 .withPathStyleAccessEnabled(true).build();
     }
-
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate () {

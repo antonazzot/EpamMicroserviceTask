@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import resourceservice.model.SongDTO;
-import songservice.model.SongMetadata;
 import songservice.service.SongMetadataService;
 
 import java.util.List;
@@ -33,11 +32,8 @@ public class KafkaMetaListener {
     public void factoryList (String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         List list = objectMapper.readValue(message, List.class);
-
         list.forEach(System.out::println);
-
         songMetadataService.deleteById(list);
-
     }
 
     @org.springframework.kafka.annotation.KafkaListener(topics = "getmeta",
@@ -46,11 +42,6 @@ public class KafkaMetaListener {
     public String metaFactory (String sid) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         Integer id = objectMapper.readValue(sid, Integer.class);
-//
-//        list.forEach(System.out::println);
-
-        System.out.println("!!!!!!!!!" + id);
-
        return songMetadataService.getSongMetaById(id).orElseThrow().getMetadata();
     }
 }

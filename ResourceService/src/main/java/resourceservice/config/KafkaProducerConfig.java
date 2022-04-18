@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Description;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -85,7 +84,6 @@ public class KafkaProducerConfig {
         return new ReplyingKafkaTemplate<>(producerObjectFactory, repliesDtoContainer);
     }
 
-
     /**
      *  Delete by id's list Producer */
     @Bean
@@ -115,7 +113,6 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(producerStrFactory);
     }
 
-
     @Bean
     public ConcurrentMessageListenerContainer<String, String> repliesContainer(
             ConcurrentKafkaListenerContainerFactory<String, String> kafkaStrListenerContainerFactory) {
@@ -134,13 +131,9 @@ public class KafkaProducerConfig {
         return new ReplyingKafkaTemplate<>(producerGetMetaFactory, repliesContainer);
     }
 
-
-
     @Bean
     public KafkaTemplate<String, Integer> kafkaGetMetaTemplate(@Autowired ProducerFactory<String, Integer> producerGetMetaFactory) {
         return new KafkaTemplate<>(producerGetMetaFactory);
     }
-
-
 
 }

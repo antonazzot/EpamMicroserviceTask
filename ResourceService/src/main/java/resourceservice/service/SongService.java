@@ -12,10 +12,7 @@ import resourceservice.repository.SongRepository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,13 +31,11 @@ public class SongService {
 
         if (fileValidatorService.validateFile(file))
             return ResponseEntity.badRequest().body(new IllegalArgumentException("File mustn't be empty or file format not supported"));
-
         Song song = Song.builder()
                 .songName(file.getName())
                 .songSize(file.getSize())
                 .songAWSBucketName(bucketName)
                 .build();
-
         Integer songId = songRepository.save(song).getId();
         amazonService.extractMetaAndPutS3(songId, file, bucketName);
         return ResponseEntity.ok(songId);
@@ -51,12 +46,6 @@ public class SongService {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).header("Id problem", "Id not found").build();
         Song song = songRepository.findById(id).orElseThrow();
         return ResponseEntity.of(Optional.of(amazonService.getSongById(id, bucketName)));
-    }
-
-    public Boolean validateFile (MultipartFile multipartFile) {
-        if (multipartFile.isEmpty() || Objects.requireNonNull(multipartFile.getContentType()).isEmpty() || !multipartFile.getContentType().equals("audio/mpeg"))
-        return Boolean.TRUE;
-        return Boolean.FALSE;
     }
 
     public ResponseEntity<?> deleteSongById(Integer[] id) {
