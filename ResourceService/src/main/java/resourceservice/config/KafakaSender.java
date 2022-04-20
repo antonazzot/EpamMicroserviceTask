@@ -29,6 +29,8 @@ public class KafakaSender {
           future.addCallback(new ListenableFutureCallback<ConsumerRecord<String, SongDTO>>() {
               @Override
               public void onFailure(Throwable ex) {
+                  System.out.println("**********" + "failed" +"*************");
+                  log.error("Error in replying ={}", ex.getMessage());
                   throw new RuntimeException(ex.getMessage());
               }
               @Override

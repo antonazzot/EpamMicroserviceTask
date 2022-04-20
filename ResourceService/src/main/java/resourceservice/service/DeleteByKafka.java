@@ -15,7 +15,8 @@ public class DeleteByKafka implements DeleteInterfece {
 
     @Override
     public void deleteFromMetadata(Integer [] deleteId) {
-        List<Integer> integerList = Arrays.asList(deleteId);
-        kafkaListTemplate.send("deletesong", integerList);
+            List<Integer> integerList = Arrays.asList(deleteId);
+            kafkaListTemplate.send("deletesong", integerList);
+
     }
 }

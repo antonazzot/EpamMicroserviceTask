@@ -17,7 +17,8 @@ public class KafkaListener {
 
     @SendTo("uploadmeta")
     public SongDTO listener (SongDTO songDTO)  {
-        return processorService.extractMetadataAndSave(songDTO);
+        throw new Error();
+//        return processorService.extractMetadataAndSave(songDTO);
     }
 }
 

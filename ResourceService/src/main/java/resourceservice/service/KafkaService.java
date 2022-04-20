@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import org.springframework.stereotype.Service;
 import resourceservice.config.KafakaSender;
+import resourceservice.exception.MyCustomAppException;
 import resourceservice.model.SongDTO;
 
 import java.util.concurrent.ExecutionException;
@@ -21,21 +22,19 @@ public class KafkaService {
     private final DeleteInterfece deleteByKafka;
     private final KafakaSender kafakaSender;
 
-    public String getMetaById (Integer id) throws IllegalArgumentException {
+    public String getMetaById (Integer id) throws MyCustomAppException {
         ConsumerRecord<String, String> getmeta = null;
         try {
             getmeta = replyingTemplate.sendAndReceive(new ProducerRecord<String, Integer>("getmeta", id))
                     .get();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+           throw new MyCustomAppException(e.getMessage());
         }
-        if (getmeta!=null || !getmeta.value().isEmpty())
-       return getmeta.value();
-        else throw new  IllegalArgumentException ("Metadata not found");
+        return getmeta.value();
     }
 
 
-    public void deleteFromMetadata(Integer[] id) {
+    public void deleteFromMetadata(Integer [] id) {
         deleteByKafka.deleteFromMetadata(id);
     }
 

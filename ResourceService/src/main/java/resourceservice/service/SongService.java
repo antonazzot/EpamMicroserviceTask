@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import resourceservice.exception.MyCustomAppException;
 import resourceservice.model.Song;
 import resourceservice.repository.SongRepository;
 
@@ -27,10 +28,10 @@ public class SongService {
     private final FileValidator fileValidatorService;
     private final KafkaService kafkaService;
 
-    public ResponseEntity<?> saveSong (MultipartFile file) {
+    public Integer saveSong (MultipartFile file) {
 
-        if (fileValidatorService.validateFile(file))
-            return ResponseEntity.badRequest().body(new IllegalArgumentException("File mustn't be empty or file format not supported"));
+//        if (fileValidatorService.validateFile(file))
+//            throw new MyCustomAppException("Fail doesn't passed validate, File mustn't be empty or file format not supported");
         Song song = Song.builder()
                 .songName(file.getName())
                 .songSize(file.getSize())
@@ -38,26 +39,24 @@ public class SongService {
                 .build();
         Integer songId = songRepository.save(song).getId();
         amazonService.extractMetaAndPutS3(songId, file, bucketName);
-        return ResponseEntity.ok(songId);
+        return songId;
     }
 
-    public ResponseEntity <?> getSongById (Integer id) {
+    public byte [] getSongById (Integer id) {
         if (!songRepository.existsById(id))
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).header("Id problem", "Id not found").build();
-        Song song = songRepository.findById(id).orElseThrow();
-        return ResponseEntity.of(Optional.of(amazonService.getSongById(id, bucketName)));
+            throw new MyCustomAppException("Song with id "  + id + " does not exist");
+        return amazonService.getSongById(id, bucketName);
     }
 
-    public ResponseEntity<?> deleteSongById(Integer[] id) {
+    public int []  deleteSongById(Integer[] id) {
         List<Song> songs = songRepository.findAllById(Arrays.asList(id));
         songRepository.deleteAllById(songs.stream().map(Song::getId).collect(Collectors.toList()));
         amazonService.deleteSongs(songs);
         kafkaService.deleteFromMetadata(id);
-        int[] result =  songs.stream().mapToInt(Song::getId).toArray();
-        return ResponseEntity.of(Optional.of(result));
+        return songs.stream().mapToInt(Song::getId).toArray();
     }
 
-    public ResponseEntity<?> getMetaById(Integer id) {
-        return ResponseEntity.of(Optional.of(kafkaService.getMetaById(id)));
+    public String getMetaById(Integer id) {
+        return kafkaService.getMetaById(id);
     }
 }
