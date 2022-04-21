@@ -10,7 +10,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import resourceservice.model.SongDTO;
+import songservice.model.SongDTO;
 
 import java.util.HashMap;
 import java.util.List;

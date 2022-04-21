@@ -3,7 +3,8 @@ package songservice.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import resourceprocessor.dto.MetadataDTO;
+
+import songservice.model.SongDTO;
 import songservice.service.SongMetadataService;
 
 import java.util.Arrays;
@@ -19,8 +20,8 @@ public class SongMetadataController {
 
     @PostMapping("/save/{metadatadto}")
     @ResponseBody
-    public Integer saveMetadata (@RequestBody MetadataDTO metadatadto) {
-      return songMetadataService.saveSongMetadata(metadatadto);
+    public Integer saveMetadata (@RequestBody SongDTO songDTO) {
+      return 1;
     }
 
     @DeleteMapping("/delete/{deleteid}")

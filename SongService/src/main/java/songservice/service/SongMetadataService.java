@@ -2,8 +2,8 @@ package songservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import resourceprocessor.dto.MetadataDTO;
-import resourceservice.model.SongDTO;
+
+import songservice.model.SongDTO;
 import songservice.model.SongMetadata;
 import songservice.repository.SongMetadataRepository;
 
@@ -17,13 +17,6 @@ public class SongMetadataService {
     private final SongMetadataRepository songMetadataRepository;
     private final MetaDataConvertor metaDataConvertorJson;
     private final UserMetadataConvectorJson userMetadataConvectorJsonImp;
-
-    public Integer saveSongMetadata(MetadataDTO metadataDTO) {
-        SongMetadata songMetadata =  SongMetadata.builder()
-                .id(metadataDTO.getSongId())
-                .metadata(metaDataConvertorJson.getMetadata(metadataDTO.getObjectMetadata())).build();
-       return songMetadataRepository.save(songMetadata).getId();
-    }
 
 
     public void deleteById(List <Integer>  id) {

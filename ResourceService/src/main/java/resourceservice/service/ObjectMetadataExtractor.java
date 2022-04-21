@@ -20,7 +20,7 @@ public class ObjectMetadataExtractor {
         objectMetadata.setContentLength(file.getSize());
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.setUserMetadata(userMeta);
-        objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
+//        objectMetadata.getUserMetadata().put("fileExtension", file.getOriginalFilename());
         return objectMetadata;
     }
 }

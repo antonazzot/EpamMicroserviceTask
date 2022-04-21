@@ -5,9 +5,16 @@ spring:
     url: jdbc:postgresql://localhost:5435/song
     username: postgres
     driver: org.postgresql.Drive
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: baeldung
+  test:
+    topic: embedded-test-topic
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
+

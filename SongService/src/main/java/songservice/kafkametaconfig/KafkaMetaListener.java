@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
-import resourceservice.model.SongDTO;
+
+import songservice.model.SongDTO;
 import songservice.service.SongMetadataService;
 
 import java.util.List;

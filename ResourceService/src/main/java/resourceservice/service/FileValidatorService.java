@@ -8,8 +8,6 @@ import java.util.Objects;
 public class FileValidatorService implements FileValidator {
     @Override
     public Boolean validateFile(MultipartFile multipartFile) {
-        if (multipartFile.isEmpty() || Objects.requireNonNull(multipartFile.getContentType()).isEmpty() || !multipartFile.getContentType().equals("audio/mpeg"))
-            return Boolean.TRUE;
-        return Boolean.FALSE;
+        return  (multipartFile.isEmpty() || Objects.requireNonNull(multipartFile.getContentType()).isEmpty() || !multipartFile.getContentType().equals("audio/mpeg"));
     }
 }

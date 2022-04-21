@@ -22,21 +22,17 @@
             <artifactId>spring-boot-starter</artifactId>
             <version>2.6.6</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.6.6</version>
         </dependency>
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>2020.0.3</version>
         </dependency>
 
         <dependency>
@@ -57,30 +53,19 @@
             <version>2.3.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-parsers -->
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
-            <version>2.3.0</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>5.3.18</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-parser-audiovideo-module -->
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parser-audiovideo-module</artifactId>
             <version>2.3.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.epam.tsyrkunou</groupId>
-            <artifactId>ResourceProcessor</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.epam.tsyrkunou</groupId>-->
+<!--            <artifactId>ResourceProcessor</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
@@ -90,21 +75,23 @@
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-spring</artifactId>
             <version>6.10.0</version>
-
         </dependency>
 
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
             <version>6.10.0</version>
-
         </dependency>
 
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
             <version>6.10.0</version>
-
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.12.196</version>
         </dependency>
 
     </dependencies>
