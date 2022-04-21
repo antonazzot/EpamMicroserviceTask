@@ -30,8 +30,8 @@ public class SongService {
 
     public Integer saveSong (MultipartFile file) {
 
-//        if (fileValidatorService.validateFile(file))
-//            throw new MyCustomAppException("Fail doesn't passed validate, File mustn't be empty or file format not supported");
+        if (fileValidatorService.validateFile(file))
+            throw new MyCustomAppException("Fail doesn't passed validate, File mustn't be empty or file format not supported");
         Song song = Song.builder()
                 .songName(file.getName())
                 .songSize(file.getSize())
@@ -43,8 +43,8 @@ public class SongService {
     }
 
     public byte [] getSongById (Integer id) {
-        if (!songRepository.existsById(id))
-            throw new MyCustomAppException("Song with id "  + id + " does not exist");
+//        if (!songRepository.existsById(id))
+//            throw new MyCustomAppException("Song with id "  + id + " does not exist");
         return amazonService.getSongById(id, bucketName);
     }
 
