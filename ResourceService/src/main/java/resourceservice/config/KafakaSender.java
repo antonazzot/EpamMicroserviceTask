@@ -14,6 +14,7 @@ import resourceservice.model.SongDTO;
 
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -31,7 +32,7 @@ public class KafakaSender {
           String s = objectMapper.writeValueAsString(songDTO);
 
           ProducerRecord <String, String> record = new ProducerRecord<>("uploadsong", s);
-          RequestReplyFuture<String, String, String> future = replyingDtoTemplate.sendAndReceive(record, Duration.ofMillis(100));
+          RequestReplyFuture<String, String, String> future = replyingDtoTemplate.sendAndReceive(record);
 
           future.addCallback(new ListenableFutureCallback<ConsumerRecord<String, String>>() {
               @Override
@@ -45,7 +46,8 @@ public class KafakaSender {
                   System.out.println("**********" + "success" +"*************");
               }
           });
-           SongDTO result = objectMapper.readValue(future.get(1000, TimeUnit.MILLISECONDS).value(), SongDTO.class);
+           SongDTO result = objectMapper.readValue(future.get(10000, TimeUnit.MILLISECONDS).value(), SongDTO.class);
+          Map<String, String> userMetadata = result.getUserMetadata();
           return result;
     }
 }

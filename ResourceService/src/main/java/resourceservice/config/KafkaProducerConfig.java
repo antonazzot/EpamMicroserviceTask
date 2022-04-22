@@ -76,8 +76,8 @@ public class KafkaProducerConfig {
 
         ConcurrentMessageListenerContainer<String, String> repliesContainer =
                 kafkaJsonListenerContainerFactory.createContainer("uploadmeta");
-        repliesContainer.getContainerProperties().setGroupId("group6");
-        repliesContainer.setAutoStartup(true);
+        repliesContainer.getContainerProperties().setGroupId("mygroup2");
+        repliesContainer.setAutoStartup(false);
         return repliesContainer;
     }
 

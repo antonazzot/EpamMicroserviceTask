@@ -19,7 +19,7 @@ public class KafkaMetaListener {
     private final SongMetadataService songMetadataService;
 
     @org.springframework.kafka.annotation.KafkaListener(topics = "uploadmeta",
-            groupId = "mygroup2")
+            groupId = "mygroup8")
     public void factory (String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         SongDTO songDTO = objectMapper.readValue(message, SongDTO.class);
