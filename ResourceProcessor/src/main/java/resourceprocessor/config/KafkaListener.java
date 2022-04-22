@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import resourceprocessor.processorservice.ProcessorService;
-import resourceservice.model.SongDTO;
+import resourceprocessor.processorservice.SongDTO;
+
 
 @RequiredArgsConstructor
 @Slf4j
@@ -19,8 +20,9 @@ public class KafkaListener {
                 groupId = "mygroup1")
 
     @SendTo("uploadmeta")
-    public SongDTO listener (SongDTO songDTO) throws JsonProcessingException {
-
+    public SongDTO listener (String message) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        SongDTO songDTO = objectMapper.readValue(message, SongDTO.class);
        return processorService.extractMetadataAndSave(songDTO);
     }
 }

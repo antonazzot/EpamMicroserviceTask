@@ -10,7 +10,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import resourceservice.model.SongDTO;
+import resourceprocessor.processorservice.SongDTO;
 
 
 import java.util.HashMap;
@@ -30,12 +30,12 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ProducerFactory<String, SongDTO> producerObjectFactory() {
+    public ProducerFactory<String, String> producerObjectFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, SongDTO> kafkaTemplate(@Autowired ProducerFactory<String, SongDTO> producerObjectFactory) {
+    public KafkaTemplate<String, String> kafkaTemplate(@Autowired ProducerFactory<String, String> producerObjectFactory) {
         return new KafkaTemplate<>(producerObjectFactory);
     }
 }

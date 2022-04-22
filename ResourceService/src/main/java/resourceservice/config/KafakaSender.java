@@ -1,5 +1,7 @@
 package resourceservice.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -19,12 +21,15 @@ import java.util.concurrent.TimeoutException;
 @Service
 public class KafakaSender {
 
-    private final ReplyingKafkaTemplate<String, SongDTO, SongDTO> replyingDtoTemplate;
+    private final ReplyingKafkaTemplate<String, String, SongDTO> replyingDtoTemplate;
 
-      public SongDTO sendMessageWithCallback(SongDTO songDTO) throws ExecutionException, InterruptedException, TimeoutException {
+      public SongDTO sendMessageWithCallback(SongDTO songDTO) throws ExecutionException, InterruptedException, TimeoutException, JsonProcessingException {
 
-          ProducerRecord <String, SongDTO> record = new ProducerRecord<>("uploadsong", songDTO);
-          RequestReplyFuture<String, SongDTO, SongDTO> future = replyingDtoTemplate.sendAndReceive(record);
+          ObjectMapper objectMapper = new ObjectMapper();
+          String s = objectMapper.writeValueAsString(songDTO);
+
+          ProducerRecord <String, String> record = new ProducerRecord<>("uploadsong", s);
+          RequestReplyFuture<String, String, SongDTO> future = replyingDtoTemplate.sendAndReceive(record);
 
           future.addCallback(new ListenableFutureCallback<ConsumerRecord<String, SongDTO>>() {
               @Override

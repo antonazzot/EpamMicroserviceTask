@@ -1,5 +1,6 @@
 package resourceservice.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -44,6 +45,8 @@ public class KafkaService {
          result =  kafakaSender.sendMessageWithCallback(songDTO);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
            log.error(e.getMessage());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
         return result;
     }

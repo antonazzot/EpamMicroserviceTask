@@ -14,7 +14,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-import resourceservice.model.SongDTO;
+
 
 
 import java.util.HashMap;
@@ -30,26 +30,28 @@ public class KafkaConsumerConfig {
         HashMap<String, Object> prop = new HashMap<>();
         prop.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapservers);
         prop.put(org.springframework.kafka.support.serializer.JsonDeserializer.TRUSTED_PACKAGES, "*");
+        prop.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        prop.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return prop;
     }
 
     @Bean
-    public ConsumerFactory<String, SongDTO> consumerObjectFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(SongDTO.class));
+    public ConsumerFactory<String, String> consumerObjectFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerObjectFactory());
-        factory.setMessageConverter(new StringJsonMessageConverter());
-        return factory;
-    }
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory =
+//                new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(consumerObjectFactory());
+//        factory.setMessageConverter(new StringJsonMessageConverter());
+//        return factory;
+//    }
 
     @Bean
-    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SongDTO>> kafkaListenerContainerFactory(@Autowired KafkaTemplate <String, SongDTO > kafkaTemplate) {
-        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory(@Autowired KafkaTemplate <String, String > kafkaTemplate) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerObjectFactory());
         factory.setReplyTemplate(kafkaTemplate);
         return factory;

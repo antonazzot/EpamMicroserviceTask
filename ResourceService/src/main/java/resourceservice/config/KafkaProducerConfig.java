@@ -40,29 +40,33 @@ public class KafkaProducerConfig {
 
     @Bean
     KafkaTemplate<String, SongDTO> kafkaTemplate() {
-        KafkaTemplate<String, SongDTO> kafkaTemplate = new KafkaTemplate<>(producerObjectFactory());
+        KafkaTemplate<String, SongDTO> kafkaTemplate = new KafkaTemplate<>(producerObject1Factory());
         kafkaTemplate.setMessageConverter(new StringJsonMessageConverter());
         kafkaTemplate.setDefaultTopic("uploadsong");
-        kafkaTemplate.setProducerListener(new ProducerListener<String, SongDTO>() {
-            @Override
-            public void onSuccess(ProducerRecord<String, SongDTO> producerRecord, RecordMetadata recordMetadata) {
-                log.info("ACK from ProducerListener message: {} offset:  {}", producerRecord.value(),
-                        recordMetadata.offset());
-            }
-        });
+//        kafkaTemplate.setProducerListener(new ProducerListener<String, String>() {
+//            @Override
+//            public void onSuccess(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata) {
+////                log.info("ACK from ProducerListener message: {} offset:  {}", producerRecord.value(),
+////                        recordMetadata.offset());
+////            }
+////        });
         return kafkaTemplate;
     }
 
     /**
      *  SongDTO Producer */
-
     @Bean
-    public ProducerFactory<String, SongDTO> producerObjectFactory() {
+    public ProducerFactory<String, SongDTO> producerObject1Factory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, SongDTO> kafkaSongTemplate(@Autowired ProducerFactory<String, SongDTO> producerObjectFactory) {
+    public ProducerFactory<String, String> producerObjectFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaSongTemplate(@Autowired ProducerFactory<String, String> producerObjectFactory) {
         return new KafkaTemplate<>(producerObjectFactory);
     }
 
@@ -78,8 +82,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ReplyingKafkaTemplate<String, SongDTO, SongDTO> replyingDtoTemplate(
-            @Autowired   ProducerFactory<String, SongDTO> producerObjectFactory,
+    public ReplyingKafkaTemplate<String, String, SongDTO> replyingDtoTemplate(
+            @Autowired   ProducerFactory<String, String> producerObjectFactory,
             @Autowired  ConcurrentMessageListenerContainer<String, SongDTO> repliesDtoContainer) {
         return new ReplyingKafkaTemplate<>(producerObjectFactory, repliesDtoContainer);
     }

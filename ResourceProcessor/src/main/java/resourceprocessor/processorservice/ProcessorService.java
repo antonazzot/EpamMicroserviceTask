@@ -6,7 +6,7 @@ import org.apache.tika.exception.TikaException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.xml.sax.SAXException;
-import resourceservice.model.SongDTO;
+
 
 
 import java.io.IOException;
