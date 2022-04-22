@@ -20,10 +20,13 @@ public class KafkaListener {
                 groupId = "mygroup1")
 
     @SendTo("uploadmeta")
-    public SongDTO listener (String message) throws JsonProcessingException {
+    public String listener (String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         SongDTO songDTO = objectMapper.readValue(message, SongDTO.class);
-       return processorService.extractMetadataAndSave(songDTO);
+
+        SongDTO songDTOReturn = processorService.extractMetadataAndSave(songDTO);
+
+        return objectMapper.writeValueAsString(songDTOReturn);
     }
 }
 

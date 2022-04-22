@@ -32,7 +32,7 @@ public class KafkaMetaConsumer {
 
     @Bean
     public ConsumerFactory<String, SongDTO> consumerObjectFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(SongDTO.class));
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>());
     }
 
     @Bean

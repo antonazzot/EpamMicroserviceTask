@@ -14,7 +14,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
-
+import resourceprocessor.processorservice.SongDTO;
 
 
 import java.util.HashMap;
@@ -40,14 +40,14 @@ public class KafkaConsumerConfig {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
-//    @Bean
-//    public ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory() {
-//        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory =
-//                new ConcurrentKafkaListenerContainerFactory<>();
-//        factory.setConsumerFactory(consumerObjectFactory());
-//        factory.setMessageConverter(new StringJsonMessageConverter());
-//        return factory;
-//    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaJsonListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerObjectFactory());
+        factory.setMessageConverter(new StringJsonMessageConverter());
+        return factory;
+    }
 
     @Bean
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>> kafkaListenerContainerFactory(@Autowired KafkaTemplate <String, String > kafkaTemplate) {

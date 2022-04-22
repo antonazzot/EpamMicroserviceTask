@@ -34,31 +34,31 @@ public class KafkaProducerConfig {
         HashMap<String, Object> prop = new HashMap<>();
         prop.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapservers);
         prop.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        prop.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        prop.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return prop;
     }
 
-    @Bean
-    KafkaTemplate<String, SongDTO> kafkaTemplate() {
-        KafkaTemplate<String, SongDTO> kafkaTemplate = new KafkaTemplate<>(producerObject1Factory());
-        kafkaTemplate.setMessageConverter(new StringJsonMessageConverter());
-        kafkaTemplate.setDefaultTopic("uploadsong");
-//        kafkaTemplate.setProducerListener(new ProducerListener<String, String>() {
-//            @Override
-//            public void onSuccess(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata) {
-////                log.info("ACK from ProducerListener message: {} offset:  {}", producerRecord.value(),
-////                        recordMetadata.offset());
-////            }
-////        });
-        return kafkaTemplate;
-    }
-
-    /**
-     *  SongDTO Producer */
-    @Bean
-    public ProducerFactory<String, SongDTO> producerObject1Factory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
+//    @Bean
+//    KafkaTemplate<String, SongDTO> kafkaTemplate() {
+//        KafkaTemplate<String, SongDTO> kafkaTemplate = new KafkaTemplate<>(producerObject1Factory());
+//        kafkaTemplate.setMessageConverter(new StringJsonMessageConverter());
+//        kafkaTemplate.setDefaultTopic("uploadsong");
+////        kafkaTemplate.setProducerListener(new ProducerListener<String, String>() {
+////            @Override
+////            public void onSuccess(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata) {
+//////                log.info("ACK from ProducerListener message: {} offset:  {}", producerRecord.value(),
+//////                        recordMetadata.offset());
+//////            }
+//////        });
+//        return kafkaTemplate;
+//    }
+//
+//    /**
+//     *  SongDTO Producer */
+//    @Bean
+//    public ProducerFactory<String, SongDTO> producerObject1Factory() {
+//        return new DefaultKafkaProducerFactory<>(producerConfig());
+//    }
 
     @Bean
     public ProducerFactory<String, String> producerObjectFactory() {
@@ -71,20 +71,20 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public ConcurrentMessageListenerContainer<String, SongDTO> repliesDtoContainer(
-            ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory) {
+    public ConcurrentMessageListenerContainer<String, String> repliesDtoContainer(
+            ConcurrentKafkaListenerContainerFactory<String, String> kafkaJsonListenerContainerFactory) {
 
-        ConcurrentMessageListenerContainer<String, SongDTO> repliesContainer =
+        ConcurrentMessageListenerContainer<String, String> repliesContainer =
                 kafkaJsonListenerContainerFactory.createContainer("uploadmeta");
         repliesContainer.getContainerProperties().setGroupId("group6");
-        repliesContainer.setAutoStartup(false);
+        repliesContainer.setAutoStartup(true);
         return repliesContainer;
     }
 
     @Bean
-    public ReplyingKafkaTemplate<String, String, SongDTO> replyingDtoTemplate(
+    public ReplyingKafkaTemplate<String, String, String> replyingDtoTemplate(
             @Autowired   ProducerFactory<String, String> producerObjectFactory,
-            @Autowired  ConcurrentMessageListenerContainer<String, SongDTO> repliesDtoContainer) {
+            @Autowired  ConcurrentMessageListenerContainer<String, String> repliesDtoContainer) {
         return new ReplyingKafkaTemplate<>(producerObjectFactory, repliesDtoContainer);
     }
 

@@ -26,24 +26,25 @@ public class KafkaConsumerConfig {
         HashMap<String, Object> prop = new HashMap<>();
         prop.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapservers);
         prop.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup2");
+//        prop.put(ConsumerConfig.GROUP_ID_CONFIG, "mygroup2");
         return prop;
     }
 
     @Bean
-    public ConsumerFactory<String, SongDTO> consumerObjectFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new JsonDeserializer<>(SongDTO.class));
+    public ConsumerFactory<String, String> consumerObjectFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(), new StringDeserializer(), new StringDeserializer());
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, SongDTO> kafkaJsonListenerContainerFactory(@Autowired KafkaTemplate <String, SongDTO> kafkaTemplate) {
-        ConcurrentKafkaListenerContainerFactory<String, SongDTO> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaJsonListenerContainerFactory(@Autowired KafkaTemplate <String, String> kafkaSongTemplate) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerObjectFactory());
-        factory.setReplyTemplate(kafkaTemplate);
+        factory.setReplyTemplate(kafkaSongTemplate);
         factory.setMessageConverter(new StringJsonMessageConverter());
         return factory;
     }
+
 
     /** meta consumer */
 

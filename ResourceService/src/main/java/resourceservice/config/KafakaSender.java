@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import resourceservice.model.SongDTO;
 
+import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -21,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 @Service
 public class KafakaSender {
 
-    private final ReplyingKafkaTemplate<String, String, SongDTO> replyingDtoTemplate;
+    private final ReplyingKafkaTemplate<String, String, String> replyingDtoTemplate;
 
       public SongDTO sendMessageWithCallback(SongDTO songDTO) throws ExecutionException, InterruptedException, TimeoutException, JsonProcessingException {
 
@@ -29,9 +31,9 @@ public class KafakaSender {
           String s = objectMapper.writeValueAsString(songDTO);
 
           ProducerRecord <String, String> record = new ProducerRecord<>("uploadsong", s);
-          RequestReplyFuture<String, String, SongDTO> future = replyingDtoTemplate.sendAndReceive(record);
+          RequestReplyFuture<String, String, String> future = replyingDtoTemplate.sendAndReceive(record, Duration.ofMillis(100));
 
-          future.addCallback(new ListenableFutureCallback<ConsumerRecord<String, SongDTO>>() {
+          future.addCallback(new ListenableFutureCallback<ConsumerRecord<String, String>>() {
               @Override
               public void onFailure(Throwable ex) {
                   System.out.println("**********" + "failed" +"*************");
@@ -39,12 +41,12 @@ public class KafakaSender {
                   throw new RuntimeException(ex.getMessage());
               }
               @Override
-              public void onSuccess(ConsumerRecord<String, SongDTO> result) {
+              public void onSuccess(ConsumerRecord<String, String> result) {
                   System.out.println("**********" + "success" +"*************");
               }
           });
-            return future.get(1000, TimeUnit.MILLISECONDS).value();
-
+           SongDTO result = objectMapper.readValue(future.get(1000, TimeUnit.MILLISECONDS).value(), SongDTO.class);
+          return result;
     }
 }
 
