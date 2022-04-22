@@ -29,3 +29,5 @@ eureka:
   client:
     server-url:
       defaultZone: http://localhost:8761/
+#what service used for message exchange (evreke|kafka)
+changeBy: kafka

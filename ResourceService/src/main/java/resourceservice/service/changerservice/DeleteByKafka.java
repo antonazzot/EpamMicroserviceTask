@@ -1,4 +1,4 @@
-package resourceservice.service;
+package resourceservice.service.changerservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,6 +17,5 @@ public class DeleteByKafka implements DeleteInterfece {
     public void deleteFromMetadata(Integer [] deleteId) {
             List<Integer> integerList = Arrays.asList(deleteId);
             kafkaListTemplate.send("deletesong", integerList);
-
     }
 }

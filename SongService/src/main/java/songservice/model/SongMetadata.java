@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@ToString
 @Table(name = "metadata")
 public class SongMetadata {
     @Id

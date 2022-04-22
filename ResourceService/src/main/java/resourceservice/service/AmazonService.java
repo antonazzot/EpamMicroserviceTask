@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import resourceservice.model.Song;
 import resourceservice.model.SongDTO;
+import resourceservice.service.changerservice.ChangerSender;
+import resourceservice.service.changerservice.KafkaService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +28,7 @@ public class AmazonService {
     private final AmazonS3 amazonS3;
     private final KafkaService kafkaService;
     private final ObjectMetadataExtractor objectMetadataExtractor;
+    private final ChangerSender changerSender;
 
     @Async
     @SneakyThrows
@@ -36,7 +39,7 @@ public class AmazonService {
                 .userMetadata(new HashMap<>())
                 .build();
 
-        SongDTO receiveDto = kafkaService.sendWithSongDtoReply(songDTO);
+        SongDTO receiveDto = changerSender.sendAndRecive(songDTO);
 
         ObjectMetadata objectMetadata = null;
         objectMetadata = receiveDto!=null ? objectMetadataExtractor.extractObjectMetadata(multipartFile, receiveDto.getUserMetadata())

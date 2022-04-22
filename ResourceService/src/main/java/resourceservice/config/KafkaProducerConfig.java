@@ -66,7 +66,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, String> kafkaSongTemplate(@Autowired ProducerFactory<String, String> producerObjectFactory) {
+    public KafkaTemplate<String, String> kafkaStrTemplate(@Autowired ProducerFactory<String, String> producerObjectFactory) {
         return new KafkaTemplate<>(producerObjectFactory);
     }
 
@@ -90,9 +90,10 @@ public class KafkaProducerConfig {
 
     /**
      *  Delete by id's list Producer */
+
     @Bean
     public ProducerFactory<String, List<Integer>> producerListFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(producerStrConfig());
     }
 
     @Bean
@@ -102,19 +103,23 @@ public class KafkaProducerConfig {
 
     /**
      *  Get metadata by id's Producer */
+
+    public Map<String, Object> producerStrConfig() {
+        HashMap<String, Object> prop = new HashMap<>();
+        prop.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapservers);
+        prop.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        prop.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        return prop;
+    }
+
     @Bean
     public ProducerFactory<String, Integer> producerGetMetaFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
+        return new DefaultKafkaProducerFactory<>(producerStrConfig());
     }
 
     @Bean
-    public ProducerFactory<String, String> producerStrFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfig());
-    }
-
-    @Bean
-    public KafkaTemplate<String, String> kafkaStrTemplate(@Autowired ProducerFactory<String, String> producerStrFactory) {
-        return new KafkaTemplate<>(producerStrFactory);
+    public KafkaTemplate<String, Integer> kafkaGetMetaTemplate(@Autowired ProducerFactory<String, Integer> producerGetMetaFactory) {
+        return new KafkaTemplate<>(producerGetMetaFactory);
     }
 
     @Bean
@@ -123,7 +128,7 @@ public class KafkaProducerConfig {
 
         ConcurrentMessageListenerContainer<String, String> repliesContainer =
                 kafkaStrListenerContainerFactory.createContainer("receivemeta");
-        repliesContainer.getContainerProperties().setGroupId("group5");
+        repliesContainer.getContainerProperties().setGroupId("group9");
         repliesContainer.setAutoStartup(false);
         return repliesContainer;
     }
@@ -135,9 +140,5 @@ public class KafkaProducerConfig {
         return new ReplyingKafkaTemplate<>(producerGetMetaFactory, repliesContainer);
     }
 
-    @Bean
-    public KafkaTemplate<String, Integer> kafkaGetMetaTemplate(@Autowired ProducerFactory<String, Integer> producerGetMetaFactory) {
-        return new KafkaTemplate<>(producerGetMetaFactory);
-    }
 
 }

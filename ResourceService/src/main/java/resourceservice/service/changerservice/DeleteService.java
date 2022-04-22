@@ -1,4 +1,4 @@
-package resourceservice.service;
+package resourceservice.service.changerservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

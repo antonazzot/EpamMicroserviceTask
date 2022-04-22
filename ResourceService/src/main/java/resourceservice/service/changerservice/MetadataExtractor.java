@@ -1,6 +1,5 @@
-package resourceservice.service;
+package resourceservice.service.changerservice;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,9 +10,9 @@ import resourceservice.model.SongDTO;
 public class MetadataExtractor implements MetadataExtractorInterfece {
     private final RestTemplate restTemplate;
 
-    public ObjectMetadata extractMetadata (SongDTO songDTO) {
+    public SongDTO extractMetadata (SongDTO songDTO) {
         return restTemplate.postForObject("http://PARSER/parser/parse/{file}", songDTO,
-                ObjectMetadata.class, songDTO);
+                SongDTO.class, songDTO);
     }
 
     public String getMetadataFromBD (Integer id) {

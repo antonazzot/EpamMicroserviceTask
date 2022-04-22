@@ -14,8 +14,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 public class ProcessorService {
-
-    private final RestTemplate restTemplate;
+    
     private final TikaExtractorService tikaExtractorService;
 
     public SongDTO extractMetadataAndSave (SongDTO songDTO) {

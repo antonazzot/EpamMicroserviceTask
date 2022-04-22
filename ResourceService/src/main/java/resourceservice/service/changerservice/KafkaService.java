@@ -1,4 +1,4 @@
-package resourceservice.service;
+package resourceservice.service.changerservice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
+import org.springframework.kafka.requestreply.RequestReplyFuture;
 import org.springframework.stereotype.Service;
 import resourceservice.config.KafakaSender;
 import resourceservice.exception.MyCustomAppException;
@@ -26,8 +27,10 @@ public class KafkaService {
     public String getMetaById (Integer id) throws MyCustomAppException {
         ConsumerRecord<String, String> getmeta = null;
         try {
-            getmeta = replyingTemplate.sendAndReceive(new ProducerRecord<String, Integer>("getmeta", id))
-                    .get();
+            RequestReplyFuture<String, Integer, String> getmeta1 = replyingTemplate.sendAndReceive(new ProducerRecord<String, Integer>("getmeta", id));
+
+           getmeta = getmeta1.get();
+
         } catch (InterruptedException | ExecutionException e) {
            throw new MyCustomAppException(e.getMessage());
         }

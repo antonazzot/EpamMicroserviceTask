@@ -1,9 +1,7 @@
 package resourceservice.service;
 
-import com.amazonaws.services.dynamodbv2.xspec.B;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +16,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import resourceservice.model.Song;
 import resourceservice.model.SongDTO;
+import resourceservice.service.changerservice.KafkaService;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 class AmazonServiceTest {

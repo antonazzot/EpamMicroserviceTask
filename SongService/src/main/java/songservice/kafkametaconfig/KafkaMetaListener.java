@@ -8,6 +8,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
 import songservice.model.SongDTO;
+import songservice.model.SongMetadata;
 import songservice.service.SongMetadataService;
 
 import java.util.List;
@@ -38,11 +39,14 @@ public class KafkaMetaListener {
     }
 
     @org.springframework.kafka.annotation.KafkaListener(topics = "getmeta",
-            groupId = "mygroup4")
+            groupId = "mygroup9")
     @SendTo("receivemeta")
     public String metaFactory (String sid) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         Integer id = objectMapper.readValue(sid, Integer.class);
-       return songMetadataService.getSongMetaById(id).orElseThrow().getMetadata();
+        SongMetadata songMetadata = songMetadataService.getSongMetaById(id).orElseThrow();
+        log.info("SONG META: = {}", songMetadata.toString());
+        return objectMapper.writeValueAsString(songMetadata);
+
     }
 }

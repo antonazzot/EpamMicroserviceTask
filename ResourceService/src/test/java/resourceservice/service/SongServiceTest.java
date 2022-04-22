@@ -1,7 +1,6 @@
 package resourceservice.service;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -12,17 +11,12 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.multipart.MultipartFile;
 import resourceservice.model.Song;
 import resourceservice.repository.SongRepository;
+import resourceservice.service.changerservice.KafkaService;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static reactor.core.publisher.Mono.when;
@@ -37,7 +31,7 @@ class SongServiceTest {
     @MockBean
     private  FileValidator fileValidatorService;
     @MockBean
-    private  KafkaService kafkaService;
+    private KafkaService kafkaService;
 
     @Test
     void getSongById() {
