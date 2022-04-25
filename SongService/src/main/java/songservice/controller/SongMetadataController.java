@@ -18,10 +18,12 @@ public class SongMetadataController {
 
     private final SongMetadataService songMetadataService;
 
-    @PostMapping("/save/{metadatadto}")
+    @PostMapping("/save")
     @ResponseBody
-    public void saveMetadata (@RequestBody SongDTO songDTO) {
+    public Integer saveMetadata (@RequestBody SongDTO songDTO) {
       songMetadataService.saveSongMetadataFromKafka(songDTO);
+      log.info("receive dto ={}", songDTO.toString());
+      return 1;
     }
 
     @DeleteMapping("/delete/{deleteid}")

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import resourceprocessor.processorservice.EvrekaService;
 import resourceprocessor.processorservice.ProcessorService;
 import resourceprocessor.processorservice.SongDTO;
 
@@ -15,11 +16,11 @@ import resourceprocessor.processorservice.SongDTO;
 @RequiredArgsConstructor
 @RequestMapping("/parser")
 public class ParserController {
-    private final ProcessorService processorService;
+    private final EvrekaService evrekaService;
     
     @PostMapping("/parse/{file}")
     @ResponseBody
     public SongDTO postFile (@RequestBody SongDTO songDTO) {
-     return    processorService.extractMetadataAndSave(songDTO);
+     return   evrekaService.receiveSongToMeta(songDTO);
     }
 }

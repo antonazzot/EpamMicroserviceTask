@@ -13,8 +13,9 @@ public class EvrekaService {
     public SongDTO receiveSongToMeta (SongDTO songDTO) {
         SongDTO dto = processorService.extractMetadataAndSave(songDTO);
 
-        restTemplate.postForObject("http://METADATA/metadata/save/{metadatadto}", songDTO,
-                SongDTO.class, songDTO);
+        restTemplate.postForObject("http://METADATA/metadata/save/", dto,
+                Integer.class, dto);
+
         return dto;
     }
 }

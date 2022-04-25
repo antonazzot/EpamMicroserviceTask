@@ -41,9 +41,10 @@ public class SongService {
     }
 
     public byte [] getSongById (Integer id) {
-        if (!songRepository.existsById(id))
+        if (songRepository.existsById(id))
+            return amazonService.getSongById(id, bucketName);
+        else
             throw new MyCustomAppException("Song with id "  + id + " does not exist");
-        return amazonService.getSongById(id, bucketName);
     }
 
     public int []  deleteSongById(Integer[] id) {

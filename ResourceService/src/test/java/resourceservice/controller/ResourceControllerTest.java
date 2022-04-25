@@ -15,10 +15,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.client.RestTemplate;
 import resourceservice.model.Song;
 import resourceservice.repository.SongRepository;
 import resourceservice.service.AmazonService;
 import resourceservice.service.FileValidatorService;
+import resourceservice.service.changerservice.ChangerSender;
+import resourceservice.service.changerservice.DeleteService;
 import resourceservice.service.changerservice.KafkaService;
 import resourceservice.service.SongService;
 import org.apache.commons.io.FileUtils;
@@ -58,6 +61,12 @@ class ResourceControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private DeleteService deleteService;
+
+    @MockBean
+    private ChangerSender changerSender;
 
     @Test
     void saveFile() throws Exception {
@@ -105,11 +114,11 @@ class ResourceControllerTest {
 
     @Test
     void get() throws Exception {
-        Integer existId = 1;
+        Integer existId = 183;
 
-        SongRepository mock = Mockito.mock(SongRepository.class);
+        SongRepository songRepository = Mockito.mock(SongRepository.class);
 
-        Mockito.when(mock.existsById(existId)).thenReturn(true);
+        Mockito.when(songRepository.existsById(existId)).thenReturn(true);
 
         Mockito.when(amazonService.getSongById(existId, "bucketName")).thenReturn(new byte[1]);
 
@@ -123,6 +132,8 @@ class ResourceControllerTest {
     void delete() throws Exception {
         Integer [] ids = new Integer [] {1, 2, 3};
 
+        Mockito.doNothing().when(deleteService).deleteFromMetadata(ids);
+
         mockMvc.perform(MockMvcRequestBuilders.delete("/resources/?deleteid=1&deleteid=2&deleteid=3"))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -131,7 +142,9 @@ class ResourceControllerTest {
     @Test
     void getMetadata() throws Exception {
         Integer id =1;
-    Mockito.when(kafkaService.getMetaById(id)).thenReturn("somemeta");
+
+        Mockito.when(changerSender.getMetaById(id)).thenReturn("somemeta");
+
         mockMvc.perform(MockMvcRequestBuilders.get("/resources/getmeta/?id="+id))
                 .andDo(print())
                 .andExpect(status().isOk())

@@ -5,9 +5,9 @@ Contract.make {
     description "should return even when number input is even"
     request{
         method GET()
-        url("http://METADATA/metadata/songs") {
+        url("http://localhost:8081//metadata/songs") {
             queryParameters {
-                parameter("id", "141")
+                parameter("id", "183")
             }
         }
     }

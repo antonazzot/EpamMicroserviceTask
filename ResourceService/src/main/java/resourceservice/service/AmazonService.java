@@ -26,7 +26,6 @@ import java.util.Objects;
 @Service
 public class AmazonService {
     private final AmazonS3 amazonS3;
-    private final KafkaService kafkaService;
     private final ObjectMetadataExtractor objectMetadataExtractor;
     private final ChangerSender changerSender;
 
